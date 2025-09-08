@@ -2,8 +2,8 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { createClient } from '@supabase/supabase-js';
 
 // Supabase Configuration
-const supabaseUrl = 'https://jtninxstcjatxbwsobmn.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp0bmlueHN0Y2phdHhid3NvYm1uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTcyMzAzNzMsImV4cCI6MjA3MjgwNjM3M30.sgXPImSwFHJjMDVg6WfATsnW7ZNbgjm7fP03f0qzVAE';
+const supabaseUrl = 'YOUR_SUPABASE_URL_HERE';
+const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY_HERE';
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // --- MOCK ICONS (using emojis for web) ---
