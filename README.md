@@ -1,73 +1,120 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# College Attendance Management Application
 
-## Available Scripts
+This is a web-based attendance management application built with **React** and **Supabase**. It is designed for college faculty members to efficiently track student attendance, view dashboards, manage student rosters, and generate shareable reports. The application uses a mock navigation system and simple inline styles to simulate a clean user interface.
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+  * **User Authentication**: Secure faculty login and registration powered by Supabase Auth.
+  * **Attendance Entry**: A dedicated interface for teachers to mark daily attendance for specific classes and periods, including morning and afternoon sessions.
+  * **Student Roster Management**: Faculty can manage their class rosters by uploading student data via CSV files.
+  * **Interactive Dashboard**: Visualize class attendance with dynamic pie charts and bar charts for different date ranges (weekly, monthly, and semester-wise).
+  * **Filter & Export**: Filter students by attendance percentage and export the filtered list as a CSV file.
+  * **Report Generation**: Generate detailed attendance summaries and daily attendance records.
+  * **Sharing Capabilities**: Easily copy attendance summaries to the clipboard or share them directly via WhatsApp.
+  * **User Profile**: A dedicated profile screen to view faculty details such as name, employee ID, and department.
+  * **Responsive Design**: The UI is designed with flexible layouts to work well on various screen sizes.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+##  Technology Stack
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+  * **Frontend**: React.js
+  * **State Management**: React Hooks (`useState`, `useEffect`, `useCallback`, `useMemo`)
+  * **Backend & Database**: Supabase (used for Authentication, Database storage for profiles, attendance records, and student rosters).
+  * **Styling**: Inline CSS for simplicity and portability.
+  * **Charting**: Custom SVG-based components (`PieChart`, `BarChart`) for data visualization.
 
-### `npm test`
+##  Setup and Installation
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Prerequisites
 
-### `npm run build`
+  * Node.js (LTS version recommended)
+  * A Supabase account
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### 1\. Clone the repository
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Since this is a single-file application, you can save the provided code as `App.js` inside a new React project.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```bash
+npx create-react-app my-attendance-app
+cd my-attendance-app
+# Replace the contents of src/App.js with the provided code
+```
 
-### `npm run eject`
+### 2\. Install Dependencies
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Install the necessary Supabase client library.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```bash
+npm install @supabase/supabase-js
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 3\. Configure Supabase
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1.  Go to your Supabase project dashboard.
+2.  Navigate to **Project Settings \> API**.
+3.  Copy your `supabaseUrl` and `supabaseAnonKey`.
+4.  Replace the placeholder values in the `App.js` file with your own credentials:
 
-## Learn More
+<!-- end list -->
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```javascript
+// Supabase Configuration
+const supabaseUrl = 'YOUR_SUPABASE_URL_HERE';
+const supabaseAnonKey = 'YOUR_SUPABASE_ANON_KEY_HERE';
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 4\. Database Schema Setup
 
-### Code Splitting
+You need to create three tables in your Supabase database. You can do this easily from the Supabase Studio's SQL Editor.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+#### `profiles` Table
 
-### Analyzing the Bundle Size
+```sql
+create table public.profiles (
+  id uuid not null default gen_random_uuid(),
+  full_name text,
+  employee_id text,
+  department text,
+  role text,
+  constraint profiles_pkey primary key (id)
+);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+#### `attendance_records` Table
 
-### Making a Progressive Web App
+```sql
+create table public.attendance_records (
+  id uuid not null default gen_random_uuid(),
+  user_id uuid,
+  date timestamp with time zone not null,
+  year text,
+  section text,
+  department text,
+  morning_attendance jsonb,
+  afternoon_attendance jsonb,
+  created_at timestamp with time zone default now(),
+  constraint attendance_records_pkey primary key (id)
+);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+#### `student_rosters` Table
 
-### Advanced Configuration
+```sql
+create table public.student_rosters (
+  user_id uuid not null,
+  department text not null,
+  year text not null,
+  section text not null,
+  roster_data jsonb,
+  constraint student_rosters_pkey primary key (user_id, department, year, section)
+);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### 5\. Run the Application
 
-### Deployment
+```bash
+npm start
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# pmc-present
-# pmc-present
-# pmc-present
+The application will open in your default browser at `http://localhost:3000`.
